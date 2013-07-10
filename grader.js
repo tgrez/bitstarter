@@ -49,6 +49,12 @@ var checkHtmlFile = function(filename, checksfile) {
 };
 
 var checkHtml = function(htmlfile, checksfile) {
+    var checkJson = cheerioCheckHtml(htmlfile, checksfile);
+    var outJson = JSON.stringify(checkJson, null, 4);
+    console.log(outJson);
+};
+
+var cheerioCheckHtml = function(htmlfile, checksfile) {
     $ = cheerioHtmlFile(htmlfile);
     var checks = loadChecks(checksfile).sort();
     var out = {};
@@ -73,15 +79,11 @@ if(require.main == module) {
         .parse(process.argv);
     if(program.url) {
         rest.get(program.url).on("complete", function(data) {
-            var checkJson = checkHtml(data, program.checks);
-            var outJson = JSON.stringify(checkJson, null, 4);
-            console.log(outJson);
+            checkHtml(data, program.checks);
         });
     }
     else if(program.file) {
-        var checkJson = checkHtmlFile(program.file, program.checks);
-        var outJson = JSON.stringify(checkJson, null, 4);
-        console.log(outJson);
+        checkHtmlFile(program.file, program.checks);
     }
     else {
         console.log("Neither URL nor path to file was provided. Exiting.");
